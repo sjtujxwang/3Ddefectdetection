@@ -1,0 +1,18 @@
+<launch>
+  <arg name="gui" default="False"/>
+
+  <include file="$(find multi_robot_control)/launch/dual_arm_robot_upload.launch">
+  </include>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+      <param name="publish_frequency" value="200"/>
+  </node>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="$(arg gui)"/>
+    <param name="rate" value="100"/>
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_control)/urdf.rviz"/>
+  
+</launch>

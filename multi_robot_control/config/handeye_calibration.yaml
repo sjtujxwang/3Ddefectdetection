@@ -1,0 +1,5 @@
+polish_robot_initial_pose: {qw: 0, qx: 0, qy: 1, qz: 0, x: 0.176, y: -0.686, z: 0.317}
+capture_robot_initial_pose: {qw: 0.054, qx: 0.818, qy: 0.566, qz: -0.086, x: -0.512, y: -0.562, z: 0.604}
+basler_to_capture_robot: {qw: 0.05, qx: 0.997, qy: -0.05, qz: -0.033, x: 0.13558, y: -0.5946, z: 1.068}
+basler_to_polish_robot: {qw: 0.02634, qx: 0.02571, qy: 0.99735, qz: 0.06268, x: -0.1, y: -1.3828, z: 1.10175}
+gocator_to_capture_robot_eef: {qw: 1, qx: 0, qy: 0, qz: 0, x: 0, y: 0, z: 0.376}

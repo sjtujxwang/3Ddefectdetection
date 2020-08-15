@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find multi_robot_control)/launch/multi_arm_bringup.launch">
+  </include>
+  
+ <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_control)/multi_robot.rviz"/>
+
+ <rosparam command="load" file="$(find multi_robot_control)/config/handeye_calibration.yaml" />
+
+</launch>

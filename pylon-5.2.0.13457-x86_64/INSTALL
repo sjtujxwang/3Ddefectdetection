@@ -1,0 +1,272 @@
+Installation Guide for pylon 5.2 Camera Software Suite for Linux x86 and ARM
+
+
+Installation of the Basler pylon Camera Software Suite
+=======================================================
+
+To install the pylon 5 Camera Software Suite for Linux, you need the
+correct installation package for your architecture. We provide packages
+for x86, x86_64, armhf and arm64.
+
+This installation guide assumes that you are going to install the
+pylon Camera Software Suite to the /opt/pylon5 directory and that
+you have already extracted the pylon-5.2.x.y-<ARCH>.tar.gz archive
+to your home directory. If you choose to install in a different directory,
+you'll have to modify the directory names accordingly.
+Note: Root permissions are needed to write to /opt.
+
+To install the pylon 5 Camera Software Suite in /opt/pylon5
+follow these steps:
+
+  1. Change to the directory which contains this INSTALL file, e.g.:
+       cd ~/pylon-5.2.x.y-<ARCH>
+
+  2. Extract the corresponding SDK into /opt
+       sudo tar -C /opt -xzf pylonSDK*.tar.gz
+
+  3. Install udev-rules to set up permissions for Basler USB cameras
+     (Not required if installing using the Debian packages (*.deb))
+       ./setup-usb.sh
+
+  4. Unplug and replug all USB cameras to get the udev rules applied.
+
+  5. Execute /opt/pylon5/bin/PylonViewerApp to test your cameras.
+
+The pylon-5.2.x.y-<ARCH>.tar.gz package contains the following files:
+Samples/*                        # sample files
+pylonSDK-5.2.x.y-<ARCH>.tar.gz   # pylon SDK and runtime files
+69-basler-cameras.rules          # udev rules file
+README
+INSTALL
+setup-usb.sh                     # installer for usb support
+
+
+Basler pylon Viewer
+===================
+
+The Basler pylon Viewer lets you parameterize cameras and display acquired
+images. The Basler pylon Viewer program is installed in:
+
+   /opt/pylon5/bin/PylonViewerApp
+
+
+Camera IP Configuration
+=======================
+
+The Basler IP Configurator lets you change a camera's IP configuration
+(e.g., the IP address).
+
+As the IP Configurator needs exclusive access to the camera, we recommend
+to close all other programs (e.g. the pylon Viewer) before running the
+IP Configurator.
+
+There are three methods a camera can use for obtaining an IP address:
+
+* Static IP: The user can assign a fixed, persistent IP address (Static IP).
+* DHCP: The camera can retrieve an IP address from a DHCP server.
+* Auto IP (LLA): The camera can try to automatically negotiate an IP address
+with the PC to which it is connected (known as Auto-IP,
+Automatic Private IP Addressing, LLA or Zeroconf).
+
+After the IP Configurator has been started, it will list all connected cameras.
+Select the camera to be configured from the list of detected devices. If the status
+column indicates that the IP configuration of the camera is not correct, choose
+the desired method for the IP configuration. When choosing the static IP method,
+enter a valid IP address and appropriate subnet mask. The "Gateway" edit field
+usually can be left empty.
+
+Refer to the 'Network Adapter Configuration' section below for more information
+about assigning IP addresses to the PC's network adapters.
+
+Press the "Save" button to write the changes into the camera. After the new
+settings have been written the camera will be reset and the new settings will
+take effect.
+
+By choosing the "Assign Temporary IP address" entry from a camera's context
+menu, a temporary static IP address can be assigned to the camera. The
+temporary address will remain valid until the camera is powered down or the
+network plug is removed either from the camera or the PC, but the saved
+configuration will not be changed. This is useful if you want to connect the
+camera to a different PC or network adapter to modify some settings, but want
+to keep the current one untouched.
+
+
+Network Adapter Configuration
+=============================
+
+This section describes the correct configuration of the network adapter to which
+a camera is connected. To configure your network adapter, use the tools supplied
+with your operating system. You can use the Basler pylon IP Configurator
+to configure the IP settings of the camera (see the 'Camera IP Configuration
+section' above).
+
+
+IP Address
+-----------
+
+An easy way to establish a connection to a camera is to assign a fixed IP
+address to the network adapter to which the camera will be connected.
+
+When using only one camera or when using multiple cameras connected to only one
+network adapter via a switch, we recommend that you use Auto-IP (also known as
+Automatic Private IP Addressing, LLA or Zeroconf). Because Basler GigE cameras
+support the Auto-IP feature, a Basler GigE camera will be automatically detected
+when it is connected to a network adapter configured for Auto-IP. When Auto-IP
+is used, both the camera and the network adapter, will automatically choose an
+unassigned IP address within the 169.254.255.255 subnet. It is important that
+the network adapter is configured to use Auto-IP. Sometimes, automatic IP
+addressing is called Local-Link, dynamic address assignment, Zeroconf or LLA.
+If none of these settings is available, choose DHCP. Most implementations will
+fall back to Auto-IP if they don't receive an DHCP answer.
+
+If. for any reason, the network adapter can't be configured to use Auto-IP,
+assign a fixed, static IP address within the 169.254.255.255 subnet. Make sure
+the address is not already used.
+
+If you don't use a DHCP server for IP address configuration we recommend to
+turn off the DHCP option on the camera to shorten the camera's startup time.
+
+Attention: When multiple cameras are to be connected to different network
+adapters either by using multiple network adapters or by using a multi-port
+network adapter, Auto-IP won't work. The network address for each network
+adapter must be in a different subnet! Assign a fixed IP address from a
+different subnet to each adapter a camera is connected to.
+
+Example: A computer has two network adapters - eth1 and eth2. One camera is to
+be connected to each network adapter. Assign the address 192.168.1.1 to eth1
+and 192.168.2.1 to eth2, and use the subnet mask 255.255.255.0 for both
+adapters. Use the IP Configurator (see above) to assign a persistent IP
+address from the 192.168.1.255 subnet to the camera connected to eth1 and a
+persistent IP address from the 192.168.2.255 subnet to the camera connected to
+eth2.
+
+An alternative to assigning fixed IP addresses to network adapters and cameras
+is to run a DHCP server. In that case, DHCP must be activated for the cameras.
+DHCP can be activated by using the Basler pylon IP Configurator.
+
+See the 'Camera IP Configuration' section above for more details about changing
+a camera's IP configuration.
+
+Jumbo Frames
+-------------
+
+If your network adapter supports jumbo frames, they should be enabled by
+setting the Maximum Transfer Unit (MTU) size to 8192.
+
+Maximum UDP Socket Buffer Size
+------------------------------
+
+The system's maximum UDP receive buffer size should be increased to ensure a
+stable image acquisition. A maximum size of 2 MB is recommended. This can be
+achieved by issuing the sudo sysctl net.core.rmem_max=2097152 command.
+To make this setting persistent, you can add the net.core.rmem_max setting to
+the /etc/sysctl.conf file.
+
+Firewall
+--------
+
+The firewall must be disabled for network adapters to which cameras are
+connected. Otherwise, device discovery and receiving streaming data may not work.
+
+Reverse-Path Filtering
+----------------------
+
+In some cases reverse-path filtering may prevent the discovery of devices.
+See the README for more details on this topic.
+
+
+
+Recommended Network Adapters
+============================
+
+A GigE network adapter that supports jumbo frames is recommended. Concerning
+performance and reliability we made best experiences with the Intel PRO 1000,
+I210, I340 and I350 series.
+Although the pylon software will work with any GigE network adapter, we would
+recommend to use one of these adapters.
+
+
+Permissions for Real-Time Thread Priorities
+===========================================
+
+In pylon-based applications, the network packets are processed by a receive
+thread started by the pylonGigE library. To minimize jitter and network packet
+losses, the pylon implementation tries to set the receive thread's priority to
+real-time thread priority. Therefore, applications based on pylon require the
+necessary privileges to be allowed to change the receive thread's scheduling
+policy.
+
+However, for systems with a Linux kernel 2.6.13 or newer, it is possible to
+allow processes without root privileges to set the real-time scheduling policy.
+When the Linux PAM module is installed (which is normally the case for
+OpenSuse 10.3) you can control the maximum real-time priority for
+non-privileged processes on a per user or group basis via the
+/etc/security/limits.conf file.
+
+For example, adding the line
+
+   *      -      rtprio      99
+
+to /etc/security/limits.conf allows all users to launch applications that will
+set thread priorities to real-time priority. Changing /etc/security/limits.conf
+requires root privileges.
+
+After changing the /etc/security/limits.conf file, logging off and on again is
+required. For more details about the /etc/security/limits.conf file, see the
+limits.conf man page.
+
+We recommend that for all users who will launch a pylon-based application,
+a maximum real-time priority >=1 be specified.
+
+For kernel 2.6.12 or older, or when the PAM module is not installed, we
+recommend either starting pylon-based applications with root privileges or
+setting the SUID bit of pylon-based applications.
+
+Example: Setting the SUID bit of the pylon Viewer
+(to be performed by the root user):
+
+   chown root /opt/pylon5/bin/PylonViewerApp
+   chmod u+s /opt/pylon5/bin/PylonViewerApp
+
+Note: When the SUID bit of an application is set, the runtime linker ignores
+the value for the LD_LIBRARY_PATH variable when launching that application.
+Thus when using pylon-based SUID applications, make sure that the directories
+where pylon libraries are located are added to the /etc/ld.so.conf file as
+described above in the 'Environment Variables' section.
+
+You can use the Basler pylon Viewer application (see above) to check if the
+pylon GigE library has the required permissions for setting real-time thread
+priorities. After starting the pylon Viewer, select a camera device from the
+list of devices. In the "Features" pane expand the "Stream Parameters" node
+and select the "Guru" entry from the "User Level" drop-down list below the
+"Features" pane. The "ReceiveThreadPriority" parameter indicates the thread
+priority for the receive thread. If the value is zero, the library didn't have
+the required permissions for setting real-time thread priorities.
+A value greater than zero indicates that the thread is scheduled with real-time
+thread priorities.
+
+
+
+
+Optimizing Packet Size
+======================
+
+If your network adapter supports jumbo frames, you set the adapter's MTU to 8192
+as described in the 'Network Adapter Configuration' section above. In order to
+take advantage of the adapter's jumbo frame capability, you must also set the
+packet size used by the camera to 8192.
+
+If you are working with the pylon Viewer application, you can set the packet
+size by first selecting a camera from the tree in the "Device" pane. In the
+"Features" pane, expand the features group that shows the camera's name, expand
+the "Transport Layer" parameters group, and set the "Packet Size" parameter to 8192.
+
+If you write your own application, use the camera API to set the PacketSize
+parameter to 8192.
+
+
+Building Applications
+=====================
+
+Please refer to the README and the HTML documentation included with the
+Basler pylon package for instructions how to build pylon-based applications.

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="ip_ur1" default="192.168.1.13"/>
+  <arg name="ip_ur2" default="192.168.1.11"/>
+  <arg name="min_payload_ur10"  default="0.0"/>
+  <arg name="max_payload_ur10"  default="10.0"/>
+  <arg name="ur1_reverse_port" default="50001"/>
+  <arg name="ur2_reverse_port" default="50002"/>
+  <arg name="prefix_ur1" default="" />  
+  <arg name="prefix_ur2" default="ur10_" />
+  <arg name="controller_name_ur1" default="ur1"/>
+  <arg name="controller_name_ur2" default="ur2"/>
+
+
+  <include file="$(find multi_robot_control)/launch/dual_arm_robot_upload.launch">
+  </include>
+
+
+  <!-- ur1 common -->
+  <group ns="$(arg controller_name_ur1)">
+    <remap from="joint_states" to="/joint_states"/>
+    <include file="$(find ur_modern_driver)/launch/ur_common.launch">
+      <arg name="prefix"  value="$(arg prefix_ur1)" />
+      <arg name="robot_ip" value="$(arg ip_ur1)"/>
+      <arg name="min_payload"  value="$(arg min_payload_ur10)"/>
+      <arg name="max_payload"  value="$(arg max_payload_ur10)"/>
+      <arg name="reverse_port" value="$(arg ur1_reverse_port)"/>
+    </include>
+  </group>
+
+  <!-- ur2 common -->
+  <group ns="$(arg controller_name_ur2)">
+    <remap from="joint_states" to="/joint_states"/>
+    <include file="$(find ur_modern_driver)/launch/ur_common.launch">
+      <arg name="prefix"  value="$(arg prefix_ur2)" />
+      <arg name="robot_ip" value="$(arg ip_ur2)"/>
+      <arg name="min_payload"  value="$(arg min_payload_ur10)"/>
+      <arg name="max_payload"  value="$(arg max_payload_ur10)"/>
+      <arg name="reverse_port" value="$(arg ur2_reverse_port)"/>
+    </include>
+  </group>
+
+</launch>

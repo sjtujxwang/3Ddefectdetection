@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="multi_robot_control" type="capture_robot_control" name="capture_robot_control"/>
+    <node pkg="multi_robot_control" type="polish_robot_control" name="polish_robot_control"/>
+    <node pkg="multi_robot_control" type="tool_pose_pub" name="tool_pose_pub"/>
+    <node pkg="multi_robot_control" type="basler_detection" name="basler_detection"/>
+    <node pkg="multi_robot_control" type="main_node" name="main_node" output="screen"/>
+</launch>
