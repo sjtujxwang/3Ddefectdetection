@@ -1,4 +1,4 @@
-# 3Ddefectdetection
+# 3D defect detection
 Surface defect recognition of automobile body with pointclouds
 
 main node --> work pipiline:  multi_robot_control/src/main_node.cpp
